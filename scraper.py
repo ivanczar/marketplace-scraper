@@ -8,16 +8,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-URLlogin = "https://www.neighbourly.co.nz/login"
-username = os.getenv("EMAIL")
-password = os.getenv("PSWD")
+URL = os.getenv("URL")
+EMAIL = os.getenv("EMAIL")
+PASSWORD = os.getenv("PSWD")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-# driver.maximize_window()
+driver.maximize_window()
 
 # login
-driver.get(URLlogin)
-driver.find_element(By.ID, "username").send_keys(username)
-driver.find_element(By.ID, "password").send_keys(password)
+driver.get(URL)
+driver.find_element(By.ID, "username").send_keys(EMAIL)
+driver.find_element(By.ID, "password").send_keys(PASSWORD)
 driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
 sleep(5)
 
