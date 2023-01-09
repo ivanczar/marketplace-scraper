@@ -47,7 +47,7 @@ for listing in allListings:
         if item in title.lower():
             match += f"\t-{title}\n"
             matchCount += 1
-
+            
 # send text
 message = client.messages.create(
     from_='whatsapp:' + os.getenv("FROM_PHONE"),
