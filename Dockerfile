@@ -29,6 +29,26 @@ WORKDIR /app
 
 RUN pip install --upgrade pip
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-CMD ["python", "./scraper.py"]
+RUN apt-get update && apt-get install cron -y
+
+COPY crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab
+RUN /usr/bin/crontab /etc/cron.d/crontab
+
+# run crond as main process of container
+CMD ["cron", "-f"]
+
+
+# COPY cronjob /etc/cron.d/crontab
+# RUN chmod 0644 /etc/cron.d/crontab
+# RUN /usr/bin/crontab /etc/cron.d/crontab
+# CMD ["cron", "-f"]
+
+# COPY ./cronjob /etc/cron.d/container_cronjob
+# COPY ./script.sh /script.sh
+# RUN chmod +x /script.sh
+
+# CMD [“/bin/bash”, “-c”, “/script.sh && chmod 644 /etc/cron.d/container_cronjob && cron && tail -f /var/log/cron.log”]
+# CMD ["python", "./scraper.py"]
