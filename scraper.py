@@ -1,5 +1,5 @@
-# import os
-# from dotenv import load_dotenv
+import os
+from dotenv import load_dotenv
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,11 +9,11 @@ from selenium.webdriver.chrome.options import Options
 import keywords
 
 
-# load_dotenv()
-# URL = os.getenv("URL")
-# email = os.getenv("EMAIL")
-# password = os.getenv("PSWD")
-# phone = os.getenv("TO_PHONE")
+load_dotenv()
+URL = os.getenv("URL")
+email = os.getenv("EMAIL")
+password = os.getenv("PSWD")
+phone = os.getenv("TO_PHONE")
 keywords = keywords.words
 match = ""
 freeCount = 0
@@ -27,9 +27,9 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 # # login
 print("Logging in...")
-driver.get('https://www.neighbourly.co.nz/login')
-driver.find_element(By.ID, "username").send_keys('ivanczar2013@gmail.com')
-driver.find_element(By.ID, "password").send_keys('kukilin1')
+driver.get(URL)
+driver.find_element(By.ID, "username").send_keys(email)
+driver.find_element(By.ID, "password").send_keys(password)
 driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
 print("Logged in!")
 
