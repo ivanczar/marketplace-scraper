@@ -1,5 +1,7 @@
 FROM python:3.8
 
+RUN apt-get update --allow-releaseinfo-change
+
 RUN apt-get install chromium-driver -y
 
 # Set display port as an environment variable
