@@ -13,7 +13,6 @@ load_dotenv()
 URL = os.getenv("URL")
 email = os.getenv("EMAIL")
 password = os.getenv("PSWD")
-phone = os.getenv("TO_PHONE")
 keywords = keywords.words
 match = ""
 freeCount = 0
