@@ -1,3 +1,4 @@
 selenium
 python-dotenv
 webdriver-manager 
+yagmail
