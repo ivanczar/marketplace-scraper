@@ -1,4 +1,4 @@
 .env
-
-# Docker
-Docker-Compose.yaml
+chromedriver.exe
+__pycache__
+```
