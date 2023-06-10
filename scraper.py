@@ -5,8 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 import keywords
-import pywhatkit
 
 
 load_dotenv()
@@ -19,21 +19,28 @@ match = ""
 freeCount = 0
 matchCount = 0
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-driver.maximize_window()
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 # # login
+print("Logging in...")
 driver.get(URL)
 driver.find_element(By.ID, "username").send_keys(email)
 driver.find_element(By.ID, "password").send_keys(password)
 driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
+print("Logged in!")
 
 sleep(5)
 # nav to markeplace
+print("Navigating to marketplace...")
 driver.find_element(By.LINK_TEXT, "Market").click()
 sleep(5)
 
 # get all listings
+print("Scraping listings...")
 allListings = driver.find_elements(By.CLASS_NAME, "market-item")
 for listing in allListings:
     title = listing.find_element(
@@ -48,5 +55,4 @@ for listing in allListings:
             matchCount += 1
 
 # Only create message object if matchCount != 0 (prevent empty messages)
-pywhatkit.sendwhatmsg_instantly(phone, (
-    f'● Found {freeCount} free items \n● Found {matchCount} items matching criteria: {match}'))
+print(f'● Found {freeCount} free items \n● Found {matchCount} items matching criteria: {match}')
