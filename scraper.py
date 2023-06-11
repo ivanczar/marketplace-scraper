@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import keywords
 import yagmail
+from utils import pluralize
 
 
 load_dotenv()
@@ -27,11 +28,11 @@ driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=opti
 
 keywords = keywords.words
 match = ""
-freeCount = 0
 matchCount = 0
 
 f = open("last_listing.txt", "r")
 lastScrapedTitle = f.read()
+
 
 # login
 print("Logging in...")
@@ -41,6 +42,7 @@ driver.find_element(By.ID, "password").send_keys(TO_PSWD)
 driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
 print("Logged in!")
 sleep(5)
+
 
 # nav to markeplace
 print("Navigating to marketplace...")
@@ -52,32 +54,33 @@ sleep(5)
 print("Scraping listings...")
 listingsArr = driver.find_elements(By.CLASS_NAME, "market-item")
 firstListingTitle = listingsArr[0].find_element(By.CLASS_NAME, "market-item-subject").text
-if (lastScrapedTitle != firstListingTitle): #Checks if there are new listings
     
-    f = open("last_listing.txt", "w")
-    f.write(firstListingTitle)
-
-    for listing in listingsArr:
-
-        title = listing.find_element(
-            By.CLASS_NAME, "market-item-subject").text
-        price = listing.find_element(
-            By.CLASS_NAME, "lozenge").text
-        
-        if "Free" in price:
-            freeCount += 1
+for listing in listingsArr:
+    title = listing.find_element(
+        By.CLASS_NAME, "market-item-subject").text
+    price = listing.find_element(
+        By.CLASS_NAME, "lozenge").text
+    
+    if (title != lastScrapedTitle): # if not last scraped listing
         for item in keywords:
-            if item in title.lower():
+            if (item or pluralize(item)) in title.lower():
                 match += f"\t-{title}\n"
                 matchCount += 1
-    # send email
-    if (matchCount != 0):
-        yag = yagmail.SMTP(FROM_EMAIL, FROM_PSWD)
-        contents = [f'● Found {freeCount} free items \n● Found {matchCount} items matching criteria: {match}']
-        yag.send(TO_EMAIL, f'Neighbourly Scrape ({matchCount} matches)', contents)
-        print("Email sent!")
-else:
-    print("No new listings!")
+    else:
+        break
+
+
+f = open("last_listing.txt", "w")
+f.write(firstListingTitle)
+
+
+# send email
+if (matchCount != 0):
+    yag = yagmail.SMTP(FROM_EMAIL, FROM_PSWD)
+    contents = [f'● Found {matchCount} items matching criteria: {match}']
+    yag.send(TO_EMAIL, f'Neighbourly Scrape ({matchCount} matches)', contents)
+    print("Email sent!")
+
 
 f.close()
 driver.close()
