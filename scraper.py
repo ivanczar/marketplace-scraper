@@ -27,7 +27,7 @@ driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=opti
 
 
 keywords = keywords.words
-match = ""
+match = "\n"
 matchCount = 0
 
 f = open("last_listing.txt", "r")
@@ -64,7 +64,7 @@ for listing in listingsArr:
     if (title != lastScrapedTitle): # if not last scraped listing
         for item in keywords:
             if (item or pluralize(item)) in title.lower():
-                match += f"\t-{title}\n"
+                match += f"\t-{title}: {price}\n"
                 matchCount += 1
     else:
         break
@@ -77,8 +77,8 @@ f.write(firstListingTitle)
 # send email
 if (matchCount != 0):
     yag = yagmail.SMTP(FROM_EMAIL, FROM_PSWD)
-    contents = [f'● Found {matchCount} items matching criteria: {match}']
-    yag.send(TO_EMAIL, f'Neighbourly Scrape ({matchCount} matches)', contents)
+    contents = [f'{match}']
+    yag.send(TO_EMAIL, f'●{matchCount} matches●', contents)
     print("Email sent!")
 
 
