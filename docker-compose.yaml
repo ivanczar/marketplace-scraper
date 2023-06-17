@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  scraper:
+    image: scraper
+    volumes:
+      - /home/pi/Docker/MarketplaceScraper/keywords.py:/app/keywords.py
+    restart: always
+    environment:
+      URL: ${URL}
+      TO_EMAIL: ${TO_EMAIL}
+      TO_PSWD: ${TO_PSWD}
+      FROM_EMAIL: ${FROM_EMAIL}
+      FROM_PSWD: ${FROM_PSWD}
