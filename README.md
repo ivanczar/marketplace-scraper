@@ -15,4 +15,4 @@ Ensure you have Docker installed on your system. Clone the repo onto your system
 docker compose up -d
 ```
 
-The volume mapping in the docker compose allows modifying the list of keywords without having to rebuild the image.
+The volume mapping in the docker compose file allows for modifying the list of keywords without having to rebuild the image.
