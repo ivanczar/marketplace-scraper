@@ -8,8 +8,8 @@ class Email:
     def send(self, data, toEmail):
         print("Sending email...")
 
-        matchCount = data.totalMatchCount;
-        listings = data.matchingTitles[0];
+        matchCount = data.count;
+        listings = data.titles[0];
         
         self.client.send(toEmail, f'●{matchCount} matches●', listings)
         print("Email sent!")

@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   scraper:
+    build: "."
     image: scraper
     volumes:
       - /home/pi/Docker/MarketplaceScraper/keywords.py:/app/keywords.py
