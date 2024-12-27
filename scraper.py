@@ -1,87 +1,54 @@
-import os
-from dotenv import load_dotenv
-from time import sleep
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 import keywords
-import yagmail
-from utils import pluralize
+from utils import pluralize, getLastScrapedTitle, setLastScrapedTitle
 
+class Scraper:
+    LAST_LISTING_FILE_PATH = "last_listing.txt";
 
-load_dotenv()
-URL = os.getenv("URL")
-TO_EMAIL = os.getenv("TO_EMAIL")
-TO_PSWD = os.getenv("TO_PSWD")
-FROM_EMAIL = os.getenv("FROM_EMAIL")
-FROM_PSWD = os.getenv("FROM_PSWD")
+    def __init__(self, driver):
+        self.driver = driver;
+        self.keywords = keywords.words;
+        self.lastScrapedTitle = getLastScrapedTitle(self.LAST_LISTING_FILE_PATH)
+        self.result = self.MatchingListings();
 
+    def login(self, url, email, pswd):
+        print("Logging in...")
+        self.driver.get(url)
+        self.driver.find_element(By.ID, "username").send_keys(email)
+        self.driver.find_element(By.ID, "password").send_keys(pswd)
+        self.driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
+        print("Logged in!")
 
-# set up driver
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(service=Service('/usr/bin/chromedriver'), options=options)
+    def navToMarketplace(self):
+        print("Navigating to marketplace...")
+        self.driver.find_element(By.LINK_TEXT, "Market").click()
 
+    def getAllListings(self):
+        print("Scraping listings...")
+        return self.driver.find_elements(By.CLASS_NAME, "market-item")
+        
+    def searchAllListings(self):
+        allListings = self.getAllListings();
+        firstListingTitle = allListings[0].find_element(By.CLASS_NAME, "market-item-subject").text
 
-keywords = keywords.words
-match = "\n"
-matchCount = 0
+        for listing in allListings:
+            listingTitle = listing.find_element(
+                By.CLASS_NAME, "market-item-subject").text
+            listingPrice = listing.find_element(
+                By.CLASS_NAME, "lozenge").text
+            
+            if (listingTitle != self.lastScrapedTitle): # if not last scraped listing
+                for keyword in keywords:
+                    if (keyword or pluralize(keyword)) in listingTitle.lower():
+                        self.result.listingsTitles += f"\t-{listingTitle}: {listingPrice}\n"
+                        self.result.totalMatchCount += 1;
+            else:
+                break
 
-f = open("last_listing.txt", "r")
-lastScrapedTitle = f.read()
+        setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle);
 
-
-# login
-print("Logging in...")
-driver.get(URL)
-driver.find_element(By.ID, "username").send_keys(TO_EMAIL)
-driver.find_element(By.ID, "password").send_keys(TO_PSWD)
-driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
-print("Logged in!")
-sleep(5)
-
-
-# nav to markeplace
-print("Navigating to marketplace...")
-driver.find_element(By.LINK_TEXT, "Market").click()
-sleep(5)
-
-
-# get all listings
-print("Scraping listings...")
-listingsArr = driver.find_elements(By.CLASS_NAME, "market-item")
-firstListingTitle = listingsArr[0].find_element(By.CLASS_NAME, "market-item-subject").text
-    
-for listing in listingsArr:
-    title = listing.find_element(
-        By.CLASS_NAME, "market-item-subject").text
-    price = listing.find_element(
-        By.CLASS_NAME, "lozenge").text
-    
-    if (title != lastScrapedTitle): # if not last scraped listing
-        for item in keywords:
-            if (item or pluralize(item)) in title.lower():
-                match += f"\t-{title}: {price}\n"
-                matchCount += 1
-    else:
-        break
-
-
-f = open("last_listing.txt", "w")
-f.write(firstListingTitle)
-
-
-# send email
-if (matchCount != 0):
-    yag = yagmail.SMTP(FROM_EMAIL, FROM_PSWD)
-    contents = [f'{match}']
-    yag.send(TO_EMAIL, f'●{matchCount} matches●', contents)
-    print("Email sent!")
-
-
-f.close()
-driver.close()
-
+    class MatchingListings:
+        def __init__(self):
+            self.totalMatchCount = 0;
+            self.listingsTitles = "\n";
+            self.listingPrices = [];

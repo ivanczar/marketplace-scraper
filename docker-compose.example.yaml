@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  scraper:
+    build: "."
+    image: "scraper"
+    volumes:
+      - <host-path>:/app/keywords.py
+    restart: always
+    environment:
+      URL:
+      TO_EMAIL:
+      TO_PSWD:
+      FROM_EMAIL:
+      FROM_PSWD:

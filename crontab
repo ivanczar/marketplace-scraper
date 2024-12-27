@@ -1,5 +1,5 @@
 # START CRON JOB
 SHELL=/bin/bash
 PATH=/usr/local/bin/chromedriver:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-0 * * * * python3 /app/scraper.py > /proc/1/fd/1 2>/proc/1/fd/2
+0 * * * * python3 /app/scraper.py > /proc/1/fd/1 2>/proc/1/fd/2 #Runs every hour
 # END CRON JOB

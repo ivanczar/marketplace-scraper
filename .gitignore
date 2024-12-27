@@ -1,4 +1,5 @@
 .env
-chromedriver.exe
 __pycache__
+docker-compose.yaml
+keywords.py
 ```
