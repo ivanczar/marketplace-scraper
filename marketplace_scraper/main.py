@@ -1,11 +1,5 @@
 import os
-import sys
-
-# Add the project root directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from dotenv import load_dotenv
-from time import sleep
 from marketplace_scraper.web_driver import Driver
 from marketplace_scraper.scraper import Scraper
 from marketplace_scraper.email_driver import Email
@@ -22,11 +16,7 @@ webdriver = Driver().driver
 webscraper = Scraper(webdriver)
 emailClient = Email(FROM_EMAIL, FROM_PSWD)
 
-webscraper.login(URL, TO_EMAIL, TO_PSWD)
-sleep(5)
-webscraper.navToMarketplace()
-sleep(5)
-listings = webscraper.scrapeListings()
+listings = webscraper.scrape(URL, TO_EMAIL, TO_PSWD)
 
 if listings.getListingCount():
     emailClient.send(listings, TO_EMAIL)

@@ -1,4 +1,4 @@
-# MarketplaceScraper
+# marketplace-scraper
 
 Automated webscraper written in Python to parse through marketplace listings with the Selenium testing tool and Google Chrome webdriver. It finds listings of items that are free or that match a predefined set of keywords and sends an email containing all relevant listings obtained from the search.
 
@@ -42,11 +42,15 @@ The volume mapping in the docker compose file allows for modifying the list of k
 ## Dependencies
 selenium\
 python-dotenv\
-yagmail
+yagmail\
 Jinja2
 
 ## TODO
+### Internal
 [] Error handling (send email if error)\
-[] Add config file with dev mode (i.e ignore last scraped listing)\
+[] Add config file with dev mode (i.e ignore last scraped listing check)\
+[] Store cookies for subsequent scrapes
+### Dev
+[] Ability to set price limit for keywords (i.e only match cars less than 5000)\
 [] Automate message to seller\
-[] Ability to set price limit for keywords (i.e only match cars less than 5000)
+[] Web UI to add/remove keywords

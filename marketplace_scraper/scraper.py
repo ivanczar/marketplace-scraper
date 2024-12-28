@@ -8,6 +8,7 @@ from marketplace_scraper.utils import (
 from marketplace_scraper.matched_listings import MatchedListings
 from selenium.webdriver.chrome.webdriver import WebDriver
 import os
+from time import sleep
 
 
 class Scraper:
@@ -19,7 +20,14 @@ class Scraper:
     def __init__(self, driver: WebDriver):
         self.driver = driver
         self.lastScrapedTitle = getLastScrapedTitle(self.LAST_LISTING_FILE_PATH)
-        self.result = MatchedListings()
+        self.matchingListings = MatchedListings()
+
+    def scrape(self, url: str, email: str, pswd: str) -> MatchedListings:
+        self.login(url,email,pswd)
+        sleep(5)
+        self.navToMarketplace()
+        sleep(5)
+        return self.getMatchingListings()
 
     def login(self, url: str, email: str, pswd: str) -> None:
         print("Logging in...")
@@ -35,32 +43,37 @@ class Scraper:
         print("Navigating to marketplace...")
         self.driver.find_element(By.LINK_TEXT, "Market").click()
 
-    def getListings(self):
+    def getAllListings(self):
         return self.driver.find_elements(By.CLASS_NAME, "market-item")
 
-    def scrapeListings(self) -> MatchedListings:
+    def getMatchingListings(self) -> MatchedListings:
         print("Scraping listings...")
-        listings = self.getListings()
-        firstListingTitle = (
-            listings[0].find_element(By.CLASS_NAME, "market-item-subject").text
-        )
+        listings = self.getAllListings()
+
+        firstListingTitle = listings[0].find_element(By.CLASS_NAME, "market-item-subject").text
 
         for listing in listings:
-            listingTitle = listing.find_element(
-                By.CLASS_NAME, "market-item-subject"
-            ).text
-            listingPrice = listing.find_element(By.CLASS_NAME, "lozenge").text
-            listingImage = listing.find_element(
-                By.CSS_SELECTOR, ".image img"
-            ).get_attribute("src")
-
-            if listingTitle != self.lastScrapedTitle:  # if not last scraped listing
-                for keyword in self.KEYWORDS:
-                    if (keyword or pluralize(keyword)) in listingTitle.lower():
-                        self.result.addListing(listingTitle, listingPrice, listingImage)
-            else:
+            titleElement = listing.find_element(By.CLASS_NAME, "market-item-subject")
+            listingTitle = titleElement.text
+            listingTitleLower = listingTitle.lower()
+            
+            # Check to prevent scraping duplicates
+            if listingTitle == self.lastScrapedTitle:
                 break
 
-        setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
+            priceElement = listing.find_element(By.CLASS_NAME, "lozenge")
+            imageElement = listing.find_element(By.CSS_SELECTOR, ".image img")
+            
+            listingPrice = priceElement.text
+            listingImage = imageElement.get_attribute("src")
 
-        return self.result
+            # Get titles containing keywords
+            if any(
+                keyword in listingTitleLower or pluralize(keyword) in listingTitleLower
+                for keyword in self.KEYWORDS
+            ):
+                self.matchingListings.addListing(listingTitle, listingPrice, listingImage)
+
+            setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
+
+            return self.matchingListings
