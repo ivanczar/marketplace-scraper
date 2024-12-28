@@ -1,6 +1,7 @@
 .env
 __pycache__
 docker-compose.yaml
-keywords.py
+config/keywords.py
 .vscode/
 venv/
+data/last_listing.txt

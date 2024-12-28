@@ -2,8 +2,9 @@ services:
   scraper:
     build: "."
     image: "scraper"
+    container_name: marketplace_scraper
     volumes:
-      - <host-path>:/app/keywords.py
+      - <host-path>:/app/config/keywords.py
     restart: always
     environment:
       URL:

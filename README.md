@@ -14,17 +14,17 @@ Ensure python and pip are installed.
 Create a python virtual environment
 
 In project root folder run:
-```
+```bash
 python -m venv venv
 ```
 
 Activate the environment (linux):
-```
+```bash
 source venv/bin/activate
 ```
 
 Install dependencies:
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -32,7 +32,7 @@ pip install -r requirements.txt
 ## How to run in container
 Ensure you have Docker installed on your system. Clone the repo onto your system (if ARM, clone "ARM64" branch). Create a .env file with the variables specified in the docker-compose.yaml file and modify the volume mapping paths in the docker-compose file to suit your system. Run the following command to start a container in detached mode:
 
-```
+```bash
 docker compose up -d
 ```
 
@@ -46,6 +46,7 @@ yagmail\
 
 
 ## TODO
-[] Error handling\
+[] Error handling (send email if error)\
+[] Add config file with dev mode (i.e ignore last scraped listing)\
 [] Handle listing images\
-[] Automate message to seller
+[] Automate message to seller\

@@ -1,5 +1,5 @@
 import yagmail
-from matched_listings import MatchedListings
+from marketplace_scraper.matched_listings import MatchedListings
 
 
 class Email:

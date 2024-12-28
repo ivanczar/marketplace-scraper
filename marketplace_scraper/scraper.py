@@ -1,12 +1,19 @@
 from selenium.webdriver.common.by import By
-import keywords
-from utils import pluralize, getLastScrapedTitle, setLastScrapedTitle
-from matched_listings import MatchedListings
+from config import keywords
+from marketplace_scraper.utils import (
+    pluralize,
+    getLastScrapedTitle,
+    setLastScrapedTitle,
+)
+from marketplace_scraper.matched_listings import MatchedListings
 from selenium.webdriver.chrome.webdriver import WebDriver
+import os
 
 
 class Scraper:
-    LAST_LISTING_FILE_PATH = "last_listing.txt"
+    LAST_LISTING_FILE_PATH = os.path.join(
+        os.path.dirname(__file__), "..", "data", "last_listing.txt"
+    )
     KEYWORDS = keywords.words
 
     def __init__(self, driver: WebDriver):
@@ -29,7 +36,6 @@ class Scraper:
         self.driver.find_element(By.LINK_TEXT, "Market").click()
 
     def getListings(self):
-        print("Getting listings...")
         return self.driver.find_elements(By.CLASS_NAME, "market-item")
 
     def scrapeListings(self) -> MatchedListings:

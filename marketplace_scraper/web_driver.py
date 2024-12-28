@@ -11,14 +11,13 @@ class Driver:
         self.driver = self.setupDriver(options)
 
     def setupDriver(self, options=None) -> WebDriver:
-        print("Initializing driver...")
+        print("Initializing web driver...")
         if options is None:
-            print("Using default options.")
+            print("Using default driver options.")
             options = Options()
             options.add_argument("--headless")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--remote-debugging-port=9222")  # remove?
             options.add_argument("--disable-software-rasterizer")
             options.add_argument("--disable-gpu")
 

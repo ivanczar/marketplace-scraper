@@ -1,9 +1,15 @@
 import os
+import sys
+
+# Add the project root directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from dotenv import load_dotenv
 from time import sleep
-from web_driver import Driver
-from scraper import Scraper
-from email_driver import Email
+from marketplace_scraper.web_driver import Driver
+from marketplace_scraper.scraper import Scraper
+from marketplace_scraper.email_driver import Email
+
 
 load_dotenv()
 URL = os.getenv("URL") or ""
