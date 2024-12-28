@@ -6,11 +6,11 @@ from scraper import Scraper
 from email_driver import Email
 
 load_dotenv()
-URL = os.getenv("URL")
-TO_EMAIL = os.getenv("TO_EMAIL")
-TO_PSWD = os.getenv("TO_PSWD")
-FROM_EMAIL = os.getenv("FROM_EMAIL")
-FROM_PSWD = os.getenv("FROM_PSWD")
+URL = os.getenv("URL") or ""
+TO_EMAIL = os.getenv("TO_EMAIL") or ""
+TO_PSWD = os.getenv("TO_PSWD") or ""
+FROM_EMAIL = os.getenv("FROM_EMAIL") or ""
+FROM_PSWD = os.getenv("FROM_PSWD") or ""
 
 webdriver = Driver().driver
 webscraper = Scraper(webdriver)
@@ -22,7 +22,7 @@ webscraper.navToMarketplace()
 sleep(5)
 listings = webscraper.scrapeListings()
 
-if (listings.count):
+if listings.count:
     emailClient.send(listings, TO_EMAIL)
 else:
     print("No new listings found")

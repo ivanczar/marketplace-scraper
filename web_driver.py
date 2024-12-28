@@ -1,26 +1,26 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.webdriver import WebDriver
 
 
 class Driver:
-
-    CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
+    CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
 
     def __init__(self, options=None):
         self.driver = self.setupDriver(options)
 
-    def setupDriver(self, options=None):
+    def setupDriver(self, options=None) -> WebDriver:
         print("Initializing driver...")
         if options is None:
-            print('Using default options.')
+            print("Using default options.")
             options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--remote-debugging-port=9222')
-            options.add_argument('--disable-software-rasterizer')
-            options.add_argument('--disable-gpu')
+            options.add_argument("--headless")
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--remote-debugging-port=9222")  # remove?
+            options.add_argument("--disable-software-rasterizer")
+            options.add_argument("--disable-gpu")
 
         chromeService = Service(self.CHROMEDRIVER_PATH)
         driver = webdriver.Chrome(service=chromeService, options=options)
@@ -28,5 +28,5 @@ class Driver:
 
         return driver
 
-    def quit(self):
+    def quit(self) -> None:
         self.driver.quit()
