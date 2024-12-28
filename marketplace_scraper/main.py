@@ -28,7 +28,7 @@ webscraper.navToMarketplace()
 sleep(5)
 listings = webscraper.scrapeListings()
 
-if listings.count:
+if listings.getListingCount():
     emailClient.send(listings, TO_EMAIL)
 else:
     print("No new listings found")

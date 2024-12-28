@@ -42,11 +42,12 @@ The volume mapping in the docker compose file allows for modifying the list of k
 ## Dependencies
 selenium\
 python-dotenv\
-yagmail\
-
+yagmail
+Jinja2
 
 ## TODO
 [] Error handling (send email if error)\
 [] Add config file with dev mode (i.e ignore last scraped listing)\
 [] Handle listing images\
 [] Automate message to seller\
+[] Ability to set price limit for keywords (i.e only match cars less than 5000)

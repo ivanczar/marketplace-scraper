@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .listing {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .listing img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Market Listings</h1>
+    {% for listing in listings %}
+    <div class="listing">
+        <h2>{{ listing.title }}</h2>
+        <p>Price: {{ listing.price }}</p>
+        <img src="{{ listing.img }}" alt="{{ listing.title }}">
+    </div>
+    {% endfor %}
+</body>
+</html>

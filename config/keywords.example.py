@@ -1,12 +1,6 @@
 words = [
-    "school",
-    "gym",
-    "fridge",
-    "console",
-    "pc",
-    "weight",
     "tv",
-    "phone",
+    "honda",
     "computer",
     "monitor",
     "laptop",

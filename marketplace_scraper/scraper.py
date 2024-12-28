@@ -50,14 +50,14 @@ class Scraper:
                 By.CLASS_NAME, "market-item-subject"
             ).text
             listingPrice = listing.find_element(By.CLASS_NAME, "lozenge").text
+            listingImage = listing.find_element(
+                By.CSS_SELECTOR, ".image img"
+            ).get_attribute("src")
 
             if listingTitle != self.lastScrapedTitle:  # if not last scraped listing
                 for keyword in self.KEYWORDS:
                     if (keyword or pluralize(keyword)) in listingTitle.lower():
-                        self.result.titles.append(
-                            f"\t-{listingTitle}: {listingPrice}\n"
-                        )
-                        self.result.count += 1
+                        self.result.addListing(listingTitle, listingPrice, listingImage)
             else:
                 break
 
