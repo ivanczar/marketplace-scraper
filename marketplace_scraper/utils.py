@@ -13,13 +13,13 @@ def pluralize(noun: str) -> str:
 
 
 def getLastScrapedTitle(filePath: str) -> str:
-    f = open(filePath, "r")
+    f = open(filePath, "r+")
     lastScrapedTitle = f.read()
     f.close()
     return lastScrapedTitle
 
 
 def setLastScrapedTitle(filePath: str, title: str) -> None:
-    f = open(filePath, "w")
+    f = open(filePath, "w+")
     f.write(title)
     f.close()
