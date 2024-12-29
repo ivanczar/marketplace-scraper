@@ -24,7 +24,7 @@
     {% for listing in listings %}
     <div class="listing">
         <h2>{{ listing.title }}</h2>
-        <p>Price: {{ listing.price }}</p>
+        <p>Price: {% if listing.price == 0 %}Free/Negotiable{% else %}${{ listing.price }}{% endif %}</p>
         <img src="{{ listing.img }}" alt="{{ listing.title }}">
     </div>
     {% endfor %}

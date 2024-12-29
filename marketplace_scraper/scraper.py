@@ -16,6 +16,8 @@ class Scraper:
         os.path.dirname(__file__), "..", "data", "last_listing.txt"
     )
     KEYWORDS = keywords.words
+    PRICE_FREE = "Free"
+    PRICE_NEGOTIABLE = "Negotiable"
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -55,7 +57,6 @@ class Scraper:
         for listing in listings:
             titleElement = listing.find_element(By.CLASS_NAME, "market-item-subject")
             listingTitle = titleElement.text
-            listingTitleLower = listingTitle.lower()
             
             # Check to prevent scraping duplicates
             if listingTitle == self.lastScrapedTitle:
@@ -64,16 +65,35 @@ class Scraper:
             priceElement = listing.find_element(By.CLASS_NAME, "lozenge")
             imageElement = listing.find_element(By.CSS_SELECTOR, ".image img")
             
-            listingPrice = priceElement.text
+            listingPrice = self.getFormattedPrice(priceElement.text)
             listingImage = imageElement.get_attribute("src")
 
             # Get titles containing keywords
-            if any(
-                keyword in listingTitleLower or pluralize(keyword) in listingTitleLower
-                for keyword in self.KEYWORDS
-            ):
+            if (self.isMatchingListing(listingTitle, listingPrice)):
                 self.matchingListings.addListing(listingTitle, listingPrice, listingImage)
 
-            setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
+        setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
 
-            return self.matchingListings
+        return self.matchingListings
+
+    def isMatchingListing(self, title: str, price: int) -> bool:
+        titleLower = title.lower()
+        
+        for keyword, maxPrice in self.KEYWORDS.items():
+            isKeywordInTitle = keyword in titleLower or pluralize(keyword) in titleLower
+        
+            if isKeywordInTitle and (maxPrice == None or price <= maxPrice):
+                return True
+
+        return False
+    
+    def getFormattedPrice(self,price: str)-> int:
+        match (price):
+            case self.PRICE_NEGOTIABLE:
+                return 0
+            case self.PRICE_FREE:
+                return 0
+            case _:
+                floatPrice = float(price.replace("$", "").replace(",", ""))
+                return int(floatPrice)
+        

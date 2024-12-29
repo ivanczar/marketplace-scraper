@@ -10,7 +10,7 @@ class MatchedListings:
     def __init__(self):
         self.listings: List[Dict[str, str]] = []
 
-    def addListing(self, title: str, price: str, img: str) -> None:
+    def addListing(self, title: str, price: int, img: str) -> None:
         listing = dict(title=title, price=price, img=img)
         self.listings.append(listing)
 

@@ -51,6 +51,5 @@ Jinja2
 [] Add config file with dev mode (i.e ignore last scraped listing check)\
 [] Store cookies for subsequent scrapes
 ### Dev
-[] Ability to set price limit for keywords (i.e only match cars less than 5000)\
 [] Automate message to seller\
 [] Web UI to add/remove keywords
