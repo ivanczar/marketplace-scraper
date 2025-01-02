@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "marketplace_scraper"
+version = "0.1.0"
+authors = [{ name = "ivan", email = "ivan@ivan.com" }]
+description = "A web scraper for marketplace listings"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["selenium", "python-dotenv", "yagmail", "jinja2"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["marketplace_scraper"]

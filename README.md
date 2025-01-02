@@ -53,3 +53,6 @@ Jinja2
 ### Dev
 [] Automate message to seller\
 [] Web UI to add/remove keywords
+
+## Debuggin
+EoL sequence for crontab should be LF!!!!!!!!!!!!!!!!!!

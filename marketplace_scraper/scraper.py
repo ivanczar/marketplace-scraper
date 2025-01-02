@@ -25,7 +25,7 @@ class Scraper:
         self.matchingListings = MatchedListings()
 
     def scrape(self, url: str, email: str, pswd: str) -> MatchedListings:
-        self.login(url,email,pswd)
+        self.login(url, email, pswd)
         sleep(5)
         self.navToMarketplace()
         sleep(5)
@@ -52,25 +52,29 @@ class Scraper:
         print("Scraping listings...")
         listings = self.getAllListings()
 
-        firstListingTitle = listings[0].find_element(By.CLASS_NAME, "market-item-subject").text
+        firstListingTitle = (
+            listings[0].find_element(By.CLASS_NAME, "market-item-subject").text
+        )
 
         for listing in listings:
             titleElement = listing.find_element(By.CLASS_NAME, "market-item-subject")
             listingTitle = titleElement.text
-            
+
             # Check to prevent scraping duplicates
             if listingTitle == self.lastScrapedTitle:
                 break
 
             priceElement = listing.find_element(By.CLASS_NAME, "lozenge")
             imageElement = listing.find_element(By.CSS_SELECTOR, ".image img")
-            
+
             listingPrice = self.getFormattedPrice(priceElement.text)
             listingImage = imageElement.get_attribute("src")
 
             # Get titles containing keywords
-            if (self.isMatchingListing(listingTitle, listingPrice)):
-                self.matchingListings.addListing(listingTitle, listingPrice, listingImage)
+            if self.isMatchingListing(listingTitle, listingPrice):
+                self.matchingListings.addListing(
+                    listingTitle, listingPrice, listingImage
+                )
 
         setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
 
@@ -78,17 +82,17 @@ class Scraper:
 
     def isMatchingListing(self, title: str, price: int) -> bool:
         titleLower = title.lower()
-        
+
         for keyword, maxPrice in self.KEYWORDS.items():
             isKeywordInTitle = keyword in titleLower or pluralize(keyword) in titleLower
-        
+
             if isKeywordInTitle and (maxPrice == None or price <= maxPrice):
                 return True
 
         return False
-    
-    def getFormattedPrice(self,price: str)-> int:
-        match (price):
+
+    def getFormattedPrice(self, price: str) -> int:
+        match price:
             case self.PRICE_NEGOTIABLE:
                 return 0
             case self.PRICE_FREE:
@@ -96,4 +100,3 @@ class Scraper:
             case _:
                 floatPrice = float(price.replace("$", "").replace(",", ""))
                 return int(floatPrice)
-        
