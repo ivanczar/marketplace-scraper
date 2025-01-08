@@ -1,11 +1,8 @@
 # marketplace-scraper
 
-Automated webscraper written in Python to parse through marketplace listings with the Selenium testing tool and Google Chrome webdriver. It finds listings of items that are free or that match a predefined set of keywords and sends an email containing all relevant listings obtained from the search.
+Automated webscraper written in Python to parse through marketplace listings with the Selenium testing tool and Google Chrome webdriver. It finds listings of items that are free or that match a predefined set of keywords and sends an email containing all relevant listings obtained from the search. Compatible with ARM processors such as raspberry pi.
 
 It is currently running in a container on a raspberry pi that runs the script every 12 hours via a cronjob
-
-## ARM64
-To run on an ARM processor (such as a raspberry pi), refer to the "ARM64" branch. Google Chrome doesnt support ARM processors so we need to use Chromium-driver instead.
 
 ## How to run locally
 
@@ -30,7 +27,7 @@ pip install -r requirements.txt
 
 
 ## How to run in container
-Ensure you have Docker installed on your system. Clone the repo onto your system (if ARM, clone "ARM64" branch). Create a .env file with the variables specified in the docker-compose.yaml file and modify the volume mapping paths in the docker-compose file to suit your system. Run the following command to start a container in detached mode:
+Ensure you have Docker installed on your system. Clone the repo onto your system. Create a .env file with the variables specified in the docker-compose.yaml file and modify the volume mapping paths in the docker-compose file to suit your system. Run the following command to start a container in detached mode:
 
 ```bash
 docker compose up -d
@@ -52,7 +49,7 @@ Jinja2
 [] Store cookies for subsequent scrapes
 ### Dev
 [] Automate message to seller\
-[] Web UI to add/remove keywords
+[] Web UI to add/remove keywords via list with slider for price
 
-## Debuggin
+## Debugging
 EoL sequence for crontab should be LF!!!!!!!!!!!!!!!!!!
