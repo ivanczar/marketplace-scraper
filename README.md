@@ -46,7 +46,8 @@ Jinja2
 ### Internal
 [] Error handling (send email if error)\
 [] Add config file with env for dev mode (i.e ignore last scraped listing check)\
-[] Store cookies for subsequent scrapes
+[] Store cookies for subsequent scrapes\
+[] Rename methods and variables to snake case
 ### Dev
 [] Automate message to seller\
 [] Web UI to add/remove keywords via list with slider for price | Button to run manually and test manually (without saving latest scrape)
