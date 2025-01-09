@@ -45,11 +45,11 @@ Jinja2
 ## TODO
 ### Internal
 [] Error handling (send email if error)\
-[] Add config file with dev mode (i.e ignore last scraped listing check)\
+[] Add config file with env for dev mode (i.e ignore last scraped listing check)\
 [] Store cookies for subsequent scrapes
 ### Dev
 [] Automate message to seller\
-[] Web UI to add/remove keywords via list with slider for price
+[] Web UI to add/remove keywords via list with slider for price | Button to run manually and test manually (without saving latest scrape)
 
 ## Debugging
 EoL sequence for crontab should be LF!!!!!!!!!!!!!!!!!!
