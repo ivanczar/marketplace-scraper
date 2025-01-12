@@ -5,3 +5,4 @@ config/keywords.py
 .vscode/
 venv/
 data/last_listing.txt
+data/cookies.pkl

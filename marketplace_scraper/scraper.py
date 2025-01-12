@@ -9,11 +9,16 @@ from marketplace_scraper.matched_listings import MatchedListings
 from selenium.webdriver.chrome.webdriver import WebDriver
 import os
 from time import sleep
+import pickle
+import os
 
 
 class Scraper:
     LAST_LISTING_FILE_PATH = os.path.join(
         os.path.dirname(__file__), "..", "data", "last_listing.txt"
+    )
+    COOKIES_FILE_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "data", "cookies.pkl"
     )
     KEYWORDS = keywords.words
     PRICE_FREE = "Free"
@@ -24,22 +29,55 @@ class Scraper:
         self.lastScrapedTitle = getLastScrapedTitle(self.LAST_LISTING_FILE_PATH)
         self.matchingListings = MatchedListings()
 
-    def scrape(self, url: str, email: str, pswd: str) -> MatchedListings:
-        self.login(url, email, pswd)
+    def scrape(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> MatchedListings:
+        self.login(loginUrl, authenticatedUrl, email, pswd)
         sleep(5)
         self.navToMarketplace()
         sleep(5)
         return self.getMatchingListings()
+    
+    def isLoggedIn(self):
+        element = self.driver.find_element(By.XPATH, '/html/body/header/nav/div/div[2]/ul/li[1]/a') # only visible when authenticated
+        return bool(element)
 
-    def login(self, url: str, email: str, pswd: str) -> None:
+    def login(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> None:
         print("Logging in...")
-        self.driver.get(url)
+        self.driver.get(loginUrl)
+        sleep(5)
+        
+       # Load cookies if available
+        if os.path.exists(self.COOKIES_FILE_PATH) and os.path.getsize(self.COOKIES_FILE_PATH) > 0:
+            print('Loading cookies...')
+            try:
+                with open(self.COOKIES_FILE_PATH, "rb") as file:
+                    cookies = pickle.load(file)
+                    for cookie in cookies:
+                        self.driver.add_cookie(cookie)
+                print("Cookies loaded successfully!")
+
+                self.driver.get(authenticatedUrl)
+                sleep(3)
+                if self.isLoggedIn():
+                    print("Logged in using cookies!")
+                    return
+            except (FileNotFoundError, pickle.UnpicklingError) as e:
+                print(f"Error loading cookies: {e}")
+
+        # Manual login if cookies fail or are not present
+        print("Using username and password...")
         self.driver.find_element(By.ID, "username").send_keys(email)
         self.driver.find_element(By.ID, "password").send_keys(pswd)
-        self.driver.find_element(
-            By.XPATH, "//div[@class='password-submit']/button"
-        ).click()
-        print("Logged in!")
+        self.driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
+        sleep(5)
+
+        # Save cookies only if successfully logged in
+        if self.isLoggedIn:
+            print("Saving cookies...")
+            with open(self.COOKIES_FILE_PATH, "wb") as file:
+                pickle.dump(self.driver.get_cookies(), file)
+            print("Cookies saved successfully!")
+        else:
+            print("Login failed.")
 
     def navToMarketplace(self):
         print("Navigating to marketplace...")
