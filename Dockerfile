@@ -22,13 +22,15 @@ RUN pip install .
 # Add and configure cron job
 COPY ./config/crontab /etc/cron.d/marketplace_cron
 RUN chmod 0644 /etc/cron.d/marketplace_cron && \
-    crontab /etc/cron.d/marketplace_cron
+crontab /etc/cron.d/marketplace_cron
 
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose logs for easier debugging (optional)
+# Expose logs for easier debugging
 VOLUME /var/log
+
+EXPOSE 5000
 
 # Start Supervisor as the container's main process
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

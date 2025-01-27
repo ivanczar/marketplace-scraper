@@ -5,6 +5,8 @@ services:
     container_name: marketplace_scraper
     volumes:
       - <host-path>:/app/config/keywords.py
+    ports:
+      - "9184:5000"  # Webserver port
     restart: always
     environment:
       URL:
