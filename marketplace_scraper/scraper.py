@@ -1,4 +1,8 @@
+import os
+import pickle
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.common.exceptions import NoSuchElementException
 from config import keywords
 from marketplace_scraper.utils import (
     pluralize,
@@ -6,11 +10,6 @@ from marketplace_scraper.utils import (
     setLastScrapedTitle,
 )
 from marketplace_scraper.matched_listings import MatchedListings
-from selenium.webdriver.chrome.webdriver import WebDriver
-import os
-from time import sleep
-import pickle
-import os
 
 
 class Scraper:
@@ -23,6 +22,7 @@ class Scraper:
     KEYWORDS = keywords.words
     PRICE_FREE = "Free"
     PRICE_NEGOTIABLE = "Negotiable"
+    ACCOUNT_DROPDOWN_XPATH='/html/body/header/nav/div/div[2]/ul/li[1]/a'
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -31,20 +31,20 @@ class Scraper:
 
     def scrape(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> MatchedListings:
         self.login(loginUrl, authenticatedUrl, email, pswd)
-        sleep(5)
         self.navToMarketplace()
-        sleep(5)
         return self.getMatchingListings()
     
     def isLoggedIn(self):
-        element = self.driver.find_element(By.XPATH, '/html/body/header/nav/div/div[2]/ul/li[1]/a') # only visible when authenticated
-        return bool(element)
+        try:
+            element = self.driver.find_element(By.XPATH, self.ACCOUNT_DROPDOWN_XPATH)
+            return bool(element)
+        except NoSuchElementException:
+            print("User is not logged in.")
+            return False
 
     def login(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> None:
         print("Logging in...")
         self.driver.get(loginUrl)
-        sleep(5)
-        
        # Load cookies if available
         if os.path.exists(self.COOKIES_FILE_PATH) and os.path.getsize(self.COOKIES_FILE_PATH) > 0:
             print('Loading cookies...')
@@ -54,10 +54,10 @@ class Scraper:
                     for cookie in cookies:
                         self.driver.add_cookie(cookie)
                 print("Cookies loaded successfully!")
-
+                self.driver.refresh() # Needed to apply cookies
                 self.driver.get(authenticatedUrl)
-                sleep(3)
-                if self.isLoggedIn():
+
+                if self.isLoggedIn:
                     print("Logged in using cookies!")
                     return
             except (FileNotFoundError, pickle.UnpicklingError) as e:
@@ -68,7 +68,6 @@ class Scraper:
         self.driver.find_element(By.ID, "username").send_keys(email)
         self.driver.find_element(By.ID, "password").send_keys(pswd)
         self.driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
-        sleep(5)
 
         # Save cookies only if successfully logged in
         if self.isLoggedIn:
