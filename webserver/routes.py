@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, Response
+from marketplace_scraper import run_scraper
 
 main = Blueprint('main', __name__)
 
@@ -74,3 +75,7 @@ def edit_word():
         save_keywords(keywords)
 
     return redirect(url_for('main.home'))
+
+@main.route('/scrape', methods=['GET'])
+def scrape():
+    return Response(run_scraper(), mimetype='text/event-stream')

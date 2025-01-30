@@ -24,7 +24,9 @@ def run_scraper():
 
     if listings.getListingCount():
         emailClient.send(listings, TO_EMAIL)
+        yield "data: Email sent!\n\n"
     else:
         print("No new listings found")
+        yield "data: No new listings found\n\n"
 
     webdriver.quit()
