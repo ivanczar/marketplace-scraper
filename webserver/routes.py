@@ -9,13 +9,13 @@ keywords_file = os.path.join(os.getcwd(), './config', 'keywords.py')
 def load_keywords():
     """Read the list of keywords from the db"""
     keywords = {}
-    with open(keywords_file) as f:
+    with open(keywords_file, encoding="utf-8") as f:
         exec(f.read(), {}, keywords)
     return keywords
 
 def save_keywords(keywords):
     """Save the keyword to db"""
-    with open(keywords_file, 'w') as f:
+    with open(keywords_file, 'w', encoding="utf-8") as f:
         f.write("words = {\n")
         for key, value in keywords['words'].items():
             if value is None:
@@ -40,7 +40,7 @@ def add_word():
     if request.method == 'POST':
         word = request.form['word']
         number_value = request.form['number_value']
-        
+
         if word and number_value.isdigit():
             keywords['words'][word] = int(number_value)
             save_keywords(keywords)

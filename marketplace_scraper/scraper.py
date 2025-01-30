@@ -29,11 +29,15 @@ class Scraper:
         self.lastScrapedTitle = getLastScrapedTitle(self.LAST_LISTING_FILE_PATH)
         self.matchingListings = MatchedListings()
 
-    def scrape(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> MatchedListings:
+    def scrape(
+        self, loginUrl: str,
+        authenticatedUrl: str,
+        email: str,
+        pswd: str) -> MatchedListings:
         self.login(loginUrl, authenticatedUrl, email, pswd)
         self.navToMarketplace()
         return self.getMatchingListings()
-    
+
     def isLoggedIn(self):
         try:
             element = self.driver.find_element(By.XPATH, self.ACCOUNT_DROPDOWN_XPATH)
@@ -57,7 +61,7 @@ class Scraper:
                 self.driver.refresh() # Needed to apply cookies
                 self.driver.get(authenticatedUrl)
 
-                if self.isLoggedIn:
+                if self.isLoggedIn():
                     print("Logged in using cookies!")
                     return
             except (FileNotFoundError, pickle.UnpicklingError) as e:
@@ -70,7 +74,7 @@ class Scraper:
         self.driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
 
         # Save cookies only if successfully logged in
-        if self.isLoggedIn:
+        if self.isLoggedIn():
             print("Saving cookies...")
             with open(self.COOKIES_FILE_PATH, "wb") as file:
                 pickle.dump(self.driver.get_cookies(), file)
@@ -123,7 +127,7 @@ class Scraper:
         for keyword, maxPrice in self.KEYWORDS.items():
             isKeywordInTitle = keyword in titleLower or pluralize(keyword) in titleLower
 
-            if isKeywordInTitle and (maxPrice == None or price <= maxPrice):
+            if isKeywordInTitle and (maxPrice is None or price <= maxPrice):
                 return True
 
         return False
