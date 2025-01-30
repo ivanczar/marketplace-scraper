@@ -4,17 +4,15 @@ from marketplace_scraper import run_scraper
 
 main = Blueprint('main', __name__)
 
-KEYWORDS_FILE_PATH = os.path.join(os.getcwd(), './config', 'keywords.py')
+KEYWORDS_FILE_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "keywords.py")
 
 def load_keywords():
-    """Read the list of keywords from the db"""
     keywords = {}
     with open(KEYWORDS_FILE_PATH, encoding="utf-8") as f:
-        exec(f.read(), {}, keywords)
+        exec(f.read(), {}, keywords) #TODO: convert keywords to json
     return keywords
 
 def save_keywords(keywords):
-    """Save the keyword to db"""
     with open(KEYWORDS_FILE_PATH, 'w', encoding="utf-8") as f:
         f.write("words = {\n")
         for key, value in keywords['words'].items():
@@ -24,17 +22,14 @@ def save_keywords(keywords):
                 f.write(f'"{key}": {value},\n')
         f.write("}\n")
 
-
 @main.route('/', methods=['GET', 'POST'])
 def home():
-    """Render the homepage"""
     keywords = load_keywords()
 
     return render_template('index.html', words=keywords['words'])
 
 @main.route('/add', methods=['POST'])
 def add_word():
-    """Add a keyword"""
     keywords = load_keywords()
 
     if request.method == 'POST':
@@ -49,7 +44,6 @@ def add_word():
 
 @main.route('/delete', methods=['POST'])
 def delete_word():
-    """Delete a keyword"""
     keywords = load_keywords()
 
     word_to_delete = request.form['word']
@@ -61,7 +55,6 @@ def delete_word():
 
 @main.route('/edit', methods=['POST'])
 def edit_word():
-    """Update the price of the keyword"""
     keywords = load_keywords()
 
     word_to_edit = request.form['word']

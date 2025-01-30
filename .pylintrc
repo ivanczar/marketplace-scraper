@@ -1,2 +1,5 @@
+[MASTER]
+load-plugins=
+
 [MESSAGES CONTROL]
-disable=missing-module-docstring
+disable=C0114,C0115,C0116  ; Disable missing docstring warnings

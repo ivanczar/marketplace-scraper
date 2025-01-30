@@ -46,12 +46,10 @@ Jinja2
 ### Internal
 [] Error handling (send email if error)\
 [] Add config file with env for dev mode (i.e ignore last scraped listing check)\
-[] Rename methods and variables to snake case
 [] Make keywords file json
 ### Dev
 [] Automate message to seller\
-[] Web UI Button to run manually and test manually (without saving latest scrape). Show last scraped time. Allow to edit cron time.
-[] Move templates folder to respective directories
+[] Web UI. Show last scraped time. Allow to edit cron time.
 
 ## Debugging
 EoL sequence for crontab should be LF!!!!!!!!!!!!!!!!!!
