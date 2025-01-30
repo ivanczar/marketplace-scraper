@@ -6,8 +6,8 @@ from selenium.common.exceptions import NoSuchElementException
 from config import keywords
 from marketplace_scraper.utils import (
     pluralize,
-    getLastScrapedTitle,
-    setLastScrapedTitle,
+    get_last_scraped_title,
+    set_last_scraped_title,
 )
 from marketplace_scraper.matched_listings import MatchedListings
 
@@ -26,19 +26,19 @@ class Scraper:
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
-        self.lastScrapedTitle = getLastScrapedTitle(self.LAST_LISTING_FILE_PATH)
-        self.matchingListings = MatchedListings()
+        self.last_scraped_title = get_last_scraped_title(self.LAST_LISTING_FILE_PATH)
+        self.matching_listings = MatchedListings()
 
     def scrape(
-        self, loginUrl: str,
-        authenticatedUrl: str,
+        self, login_url: str,
+        authenticated_url: str,
         email: str,
         pswd: str) -> MatchedListings:
-        self.login(loginUrl, authenticatedUrl, email, pswd)
-        self.navToMarketplace()
-        return self.getMatchingListings()
+        self.login(login_url, authenticated_url, email, pswd)
+        self.nav_to_marketplace()
+        return self.get_matching_listings()
 
-    def isLoggedIn(self):
+    def is_logged_in(self):
         try:
             element = self.driver.find_element(By.XPATH, self.ACCOUNT_DROPDOWN_XPATH)
             return bool(element)
@@ -46,9 +46,9 @@ class Scraper:
             print("User is not logged in.")
             return False
 
-    def login(self, loginUrl: str, authenticatedUrl: str, email: str, pswd: str) -> None:
+    def login(self, login_url: str, authenticated_url: str, email: str, pswd: str) -> None:
         print("Logging in...")
-        self.driver.get(loginUrl)
+        self.driver.get(login_url)
        # Load cookies if available
         if os.path.exists(self.COOKIES_FILE_PATH) and os.path.getsize(self.COOKIES_FILE_PATH) > 0:
             print('Loading cookies...')
@@ -59,9 +59,9 @@ class Scraper:
                         self.driver.add_cookie(cookie)
                 print("Cookies loaded successfully!")
                 self.driver.refresh() # Needed to apply cookies
-                self.driver.get(authenticatedUrl)
+                self.driver.get(authenticated_url)
 
-                if self.isLoggedIn():
+                if self.is_logged_in():
                     print("Logged in using cookies!")
                     return
             except (FileNotFoundError, pickle.UnpicklingError) as e:
@@ -74,7 +74,7 @@ class Scraper:
         self.driver.find_element(By.XPATH, "//div[@class='password-submit']/button").click()
 
         # Save cookies only if successfully logged in
-        if self.isLoggedIn():
+        if self.is_logged_in():
             print("Saving cookies...")
             with open(self.COOKIES_FILE_PATH, "wb") as file:
                 pickle.dump(self.driver.get_cookies(), file)
@@ -82,62 +82,62 @@ class Scraper:
         else:
             print("Login failed.")
 
-    def navToMarketplace(self):
+    def nav_to_marketplace(self):
         print("Navigating to marketplace...")
         self.driver.find_element(By.LINK_TEXT, "Market").click()
 
-    def getAllListings(self):
+    def get_all_listings(self):
         return self.driver.find_elements(By.CLASS_NAME, "market-item")
 
-    def getMatchingListings(self) -> MatchedListings:
+    def get_matching_listings(self) -> MatchedListings:
         print("Scraping listings...")
-        listings = self.getAllListings()
+        listings = self.get_all_listings()
 
-        firstListingTitle = (
+        first_listing_title = (
             listings[0].find_element(By.CLASS_NAME, "market-item-subject").text
         )
 
         for listing in listings:
-            titleElement = listing.find_element(By.CLASS_NAME, "market-item-subject")
-            listingTitle = titleElement.text
+            title_element = listing.find_element(By.CLASS_NAME, "market-item-subject")
+            listing_title = title_element.text
 
             # Check to prevent scraping duplicates
-            if listingTitle == self.lastScrapedTitle:
+            if listing_title == self.last_scraped_title:
                 break
 
-            priceElement = listing.find_element(By.CLASS_NAME, "lozenge")
-            imageElement = listing.find_element(By.CSS_SELECTOR, ".image img")
+            price_element = listing.find_element(By.CLASS_NAME, "lozenge")
+            image_element = listing.find_element(By.CSS_SELECTOR, ".image img")
 
-            listingPrice = self.getFormattedPrice(priceElement.text)
-            listingImage = imageElement.get_attribute("src")
+            listing_price = self.get_formatted_price(price_element.text)
+            listing_image = image_element.get_attribute("src")
 
             # Get titles containing keywords
-            if self.isMatchingListing(listingTitle, listingPrice):
-                self.matchingListings.addListing(
-                    listingTitle, listingPrice, listingImage
+            if self.is_matching_listing(listing_title, listing_price):
+                self.matching_listings.add_listing(
+                    listing_title, listing_price, listing_image
                 )
 
-        setLastScrapedTitle(self.LAST_LISTING_FILE_PATH, firstListingTitle)
+        set_last_scraped_title(self.LAST_LISTING_FILE_PATH, first_listing_title)
 
-        return self.matchingListings
+        return self.matching_listings
 
-    def isMatchingListing(self, title: str, price: int) -> bool:
-        titleLower = title.lower()
+    def is_matching_listing(self, title: str, price: int) -> bool:
+        title_lower = title.lower()
 
-        for keyword, maxPrice in self.KEYWORDS.items():
-            isKeywordInTitle = keyword in titleLower or pluralize(keyword) in titleLower
+        for keyword, max_price in self.KEYWORDS.items():
+            is_keyword_in_title = keyword in title_lower or pluralize(keyword) in title_lower
 
-            if isKeywordInTitle and (maxPrice is None or price <= maxPrice):
+            if is_keyword_in_title and (max_price is None or price <= max_price):
                 return True
 
         return False
 
-    def getFormattedPrice(self, price: str) -> int:
+    def get_formatted_price(self, price: str) -> int:
         match price:
             case self.PRICE_NEGOTIABLE:
                 return 0
             case self.PRICE_FREE:
                 return 0
             case _:
-                floatPrice = float(price.replace("$", "").replace(",", ""))
-                return int(floatPrice)
+                float_price = float(price.replace("$", "").replace(",", ""))
+                return int(float_price)

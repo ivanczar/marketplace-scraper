@@ -6,11 +6,11 @@ class Email:
     def __init__(self, email: str, pswd: str):
         self.client = yagmail.SMTP(email, pswd)
 
-    def send(self, data: MatchedListings, toEmail: str) -> None:
+    def send(self, data: MatchedListings, to_email: str) -> None:
         print("Sending email...")
 
-        formattedSubject = data.getFormattedSubject()
-        formattedContent = data.getFormattedContent()
+        formatted_subject = data.get_formatted_subject()
+        formatted_content = data.get_formatted_content()
 
-        self.client.send(toEmail, formattedSubject, formattedContent)
+        self.client.send(to_email, formatted_subject, formatted_content)
         print("Email sent!")

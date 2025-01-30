@@ -1,5 +1,3 @@
-# marketplace_scraper/__init__.py
-
 import os
 from dotenv import load_dotenv
 from marketplace_scraper.web_driver import Driver
@@ -9,21 +7,21 @@ from marketplace_scraper.email_driver import Email
 def run_scraper():
     load_dotenv()
 
-    LOGIN_URL = os.getenv("LOGIN_URL") or ""
-    AUTHENTICATED_URL = os.getenv("AUTHENTICATED_URL") or ""
-    TO_EMAIL = os.getenv("TO_EMAIL") or ""
-    TO_PSWD = os.getenv("TO_PSWD") or ""
-    FROM_EMAIL = os.getenv("FROM_EMAIL") or ""
-    FROM_PSWD = os.getenv("FROM_PSWD") or ""
+    login_url = os.getenv("LOGIN_URL") or ""
+    authenticated_url = os.getenv("AUTHENTICATED_URL") or ""
+    to_email = os.getenv("TO_EMAIL") or ""
+    to_pswd = os.getenv("TO_PSWD") or ""
+    from_email = os.getenv("FROM_EMAIL") or ""
+    from_pswd = os.getenv("FROM_PSWD") or ""
 
     webdriver = Driver().driver
     webscraper = Scraper(webdriver)
-    emailClient = Email(FROM_EMAIL, FROM_PSWD)
+    email_client = Email(from_email, from_pswd)
 
-    listings = webscraper.scrape(LOGIN_URL, AUTHENTICATED_URL, TO_EMAIL, TO_PSWD)
+    listings = webscraper.scrape(login_url, authenticated_url, to_email, to_pswd)
 
-    if listings.getListingCount():
-        emailClient.send(listings, TO_EMAIL)
+    if listings.get_listing_count():
+        email_client.send(listings, to_email)
         yield "data: Email sent!\n\n"
     else:
         print("No new listings found")

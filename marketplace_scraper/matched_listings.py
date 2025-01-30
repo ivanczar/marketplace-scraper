@@ -1,6 +1,6 @@
+import os
 from typing import List, Dict
 from jinja2 import Environment, FileSystemLoader
-import os
 
 
 class MatchedListings:
@@ -10,21 +10,21 @@ class MatchedListings:
     def __init__(self):
         self.listings: List[Dict[str, str]] = []
 
-    def addListing(self, title: str, price: int, img: str) -> None:
+    def add_listing(self, title: str, price: int, img: str) -> None:
         listing = dict(title=title, price=price, img=img)
         self.listings.append(listing)
 
-    def getFormattedContent(self) -> str:
-        return self.generateHtml()
+    def get_formatted_content(self) -> str:
+        return self.generate_html()
 
-    def getFormattedSubject(self) -> str:
-        count = self.getListingCount()
+    def get_formatted_subject(self) -> str:
+        count = self.get_listing_count()
         return f"{count} listings found!"
 
-    def getListingCount(self) -> int:
+    def get_listing_count(self) -> int:
         return len(self.listings)
 
-    def generateHtml(self) -> str:
+    def generate_html(self) -> str:
         env = Environment(loader=FileSystemLoader(self.TEMPLATES_DIRECTORY_PATH))
         template = env.get_template(self.TEMPLATE_FILE_NAME)
         html_content = template.render(listings=self.listings)

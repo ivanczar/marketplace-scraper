@@ -8,9 +8,9 @@ class Driver:
     CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
 
     def __init__(self, options=None):
-        self.driver = self.setupDriver(options)
+        self.driver = self.setup_driver(options)
 
-    def setupDriver(self, options=None) -> WebDriver:
+    def setup_driver(self, options=None) -> WebDriver:
         print("Initializing web driver...")
         if options is None:
             print("Using default driver options.")
@@ -30,8 +30,8 @@ class Driver:
             options.add_argument("--log-level=3")  # Suppress logs
             options.add_argument("--remote-debugging-port=9222")  # Avoid conflicts
 
-        chromeService = Service(self.CHROMEDRIVER_PATH)
-        driver = webdriver.Chrome(service=chromeService, options=options)
+        chrome_service = Service(self.CHROMEDRIVER_PATH)
+        driver = webdriver.Chrome(service=chrome_service, options=options)
         driver.implicitly_wait(20)
 
         return driver

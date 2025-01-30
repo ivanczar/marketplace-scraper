@@ -4,18 +4,18 @@ from marketplace_scraper import run_scraper
 
 main = Blueprint('main', __name__)
 
-keywords_file = os.path.join(os.getcwd(), './config', 'keywords.py')
+KEYWORDS_FILE_PATH = os.path.join(os.getcwd(), './config', 'keywords.py')
 
 def load_keywords():
     """Read the list of keywords from the db"""
     keywords = {}
-    with open(keywords_file, encoding="utf-8") as f:
+    with open(KEYWORDS_FILE_PATH, encoding="utf-8") as f:
         exec(f.read(), {}, keywords)
     return keywords
 
 def save_keywords(keywords):
     """Save the keyword to db"""
-    with open(keywords_file, 'w', encoding="utf-8") as f:
+    with open(KEYWORDS_FILE_PATH, 'w', encoding="utf-8") as f:
         f.write("words = {\n")
         for key, value in keywords['words'].items():
             if value is None:
