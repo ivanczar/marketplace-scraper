@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, Response
+from flask import Blueprint, render_template, request, Response
 from marketplace_scraper import run_scraper
 
 main = Blueprint('main', __name__)
@@ -32,15 +32,19 @@ def home():
 def add_word():
     keywords = load_keywords()
 
-    if request.method == 'POST':
-        word = request.form['word']
-        number_value = request.form['number_value']
+    word = request.form['word']
+    number_value = request.form['number_value']
 
-        if word and number_value.isdigit():
+    if word:
+        if number_value.strip() == '':
+            # i.e No limit
+            keywords['words'][word] = None
+        elif number_value.isdigit():
             keywords['words'][word] = int(number_value)
-            save_keywords(keywords)
 
-    return redirect(url_for('main.home'))
+        save_keywords(keywords)
+
+    return render_template('keywords_list.html', words=keywords['words'])
 
 @main.route('/delete', methods=['POST'])
 def delete_word():
@@ -51,7 +55,7 @@ def delete_word():
         del keywords['words'][word_to_delete]
         save_keywords(keywords)
 
-    return redirect(url_for('main.home'))
+    return render_template('keywords_list.html', words=keywords['words'])
 
 @main.route('/edit', methods=['POST'])
 def edit_word():
@@ -61,14 +65,20 @@ def edit_word():
     new_price = request.form['new_price']
 
     if word_to_edit in keywords['words']:
-        if new_price.isdigit():
-            keywords['words'][word_to_edit] = int(new_price)
-        else:
+        if new_price.strip() == '':
+            # i.e No limit
             keywords['words'][word_to_edit] = None
+        elif new_price.isdigit():
+            keywords['words'][word_to_edit] = int(new_price)
         save_keywords(keywords)
 
-    return redirect(url_for('main.home'))
+    return render_template('keywords_list.html', words=keywords['words'])
 
 @main.route('/scrape', methods=['GET'])
 def scrape():
-    return Response(run_scraper(), mimetype='text/event-stream')
+    def event_stream():
+        yield "data: connection_established\n\n"
+        for message in run_scraper():
+            yield message
+
+    return Response(event_stream(), mimetype='text/event-stream')

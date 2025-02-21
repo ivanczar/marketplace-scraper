@@ -28,7 +28,7 @@ class Driver:
             options.add_argument("--disable-web-security")
             options.add_argument("--disable-setuid-sandbox")
             options.add_argument("--log-level=3")  # Suppress logs
-            options.add_argument("--remote-debugging-port=9222")  # Avoid conflicts
+            options.add_argument("--remote-debugging-port=9230")  # Avoid conflicts
 
         chrome_service = Service(self.CHROMEDRIVER_PATH)
         driver = webdriver.Chrome(service=chrome_service, options=options)

@@ -18,13 +18,20 @@ def run_scraper():
     webscraper = Scraper(webdriver)
     email_client = Email(from_email, from_pswd)
 
-    listings = webscraper.scrape(login_url, authenticated_url, to_email, to_pswd)
+    try:
+        yield "data: scraping_started\n\n"
+        listings = webscraper.scrape(login_url, authenticated_url, to_email, to_pswd)
 
-    if listings.get_listing_count():
-        email_client.send(listings, to_email)
-        yield "data: Email sent!\n\n"
-    else:
-        print("No new listings found")
-        yield "data: No new listings found\n\n"
+        if listings.get_listing_count():
+            email_client.send(listings, to_email)
+            yield "data: scraping_complete\n\n"
+        else:
+            print("No new listings found")
+            yield "data: scraping_complete\n\n"
 
-    webdriver.quit()
+    except Exception as e:
+        yield f"data: scraping_error: {str(e)}\n\n"
+    finally:
+        webdriver.stop_client()
+        webdriver.close()
+        webdriver.quit()

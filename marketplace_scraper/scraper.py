@@ -127,7 +127,7 @@ class Scraper:
         for keyword, max_price in self.KEYWORDS.items():
             is_keyword_in_title = keyword in title_lower or pluralize(keyword) in title_lower
 
-            if is_keyword_in_title and (max_price is None or price <= max_price):
+            if is_keyword_in_title and (max_price in [None, 0] or price <= max_price):
                 return True
 
         return False
