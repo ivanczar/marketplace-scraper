@@ -1,16 +1,19 @@
 services:
   scraper:
-    build: "."
+    build: <PATH_TO_DOCKERFILE>
     image: "scraper"
     container_name: marketplace_scraper
+    restart: always
     volumes:
       - <host-path>:/app/config/keywords.py
     ports:
-      - "9184:5000"  # Webserver port
-    restart: always
+      - "9184:5000" # Webserver port
     environment:
-      URL:
-      TO_EMAIL:
-      TO_PSWD:
-      FROM_EMAIL:
-      FROM_PSWD:
+      - NODE_OPTIONS=--max-old-space-size=4096=value
+    env_file:
+      - <PATH_TO_ENV>
+    shm_size: 2g
+    deploy:
+      resources:
+        limits:
+          memory: 2g
