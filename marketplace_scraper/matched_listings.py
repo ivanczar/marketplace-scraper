@@ -1,6 +1,12 @@
 from typing import List, Dict
+import os
+from typing import Dict, List
+from jinja2 import Environment, FileSystemLoader
 
 class MatchedListings:
+    TEMPLATES_DIRECTORY_PATH = os.path.join(os.path.dirname(__file__), "templates")
+    TEMPLATE_FILE_NAME = "matched_listings.html"
+
     def __init__(self):
         self.listings: List[Dict[str, str]] = []
 
@@ -14,3 +20,10 @@ class MatchedListings:
 
     def get_listing_count(self) -> int:
         return len(self.listings)
+
+    def generate_html(self) -> str:
+        env = Environment(loader=FileSystemLoader(self.TEMPLATES_DIRECTORY_PATH))
+        template = env.get_template(self.TEMPLATE_FILE_NAME)
+        html_content = template.render(listings=self.listings)
+
+        return html_content
