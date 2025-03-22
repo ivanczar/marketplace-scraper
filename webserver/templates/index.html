@@ -6,25 +6,61 @@
     <title>Manage Keywords</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen font-sans">
-    <!-- Page container -->
-    <div class="container mx-auto p-6 max-w-4xl">
-        <!-- Header -->
-        <div class="flex items-start justify-between mb-10">
-            <div class="flex-1 text-center">
-                <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Manage Your Keywords</h1>
-                <p class="text-lg text-gray-600 mt-2">Easily add, edit, or remove keywords with assigned prices.</p>
+<body class="bg-gray-100 min-h-screen font-sans">
+    <!-- Sidebar -->
+    <div class="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white shadow-lg hidden md:block">
+        <div class="p-4 border-b border-gray-700">
+            <h1 class="text-xl font-bold">Scraper Dashboard</h1>
+        </div>
+        <nav class="mt-6">
+            <ul>
+                <li class="px-4 py-3 bg-indigo-600 flex items-center">
+                    <i class="fas fa-tags mr-3"></i>
+                    <span>Keywords Manager</span>
+                </li>
+                <li class="px-4 py-3 hover:bg-gray-700 flex items-center cursor-pointer">
+                    <i class="fas fa-chart-line mr-3"></i>
+                    <span>Analytics</span>
+                </li>
+                <li class="px-4 py-3 hover:bg-gray-700 flex items-center cursor-pointer">
+                    <i class="fas fa-robot mr-3"></i>
+                    <span>Scrapers</span>
+                </li>
+                <li class="px-4 py-3 hover:bg-gray-700 flex items-center cursor-pointer">
+                    <i class="fas fa-cog mr-3"></i>
+                    <span>Settings</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Mobile header -->
+    <div class="md:hidden bg-gray-800 text-white p-4 flex items-center justify-between">
+        <h1 class="text-xl font-bold">SEO Dashboard</h1>
+        <button class="text-white">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Main content -->
+    <div class="md:ml-64 p-4 md:p-8">
+        <!-- Page header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Keywords Management</h1>
+                <p class="text-gray-600 mt-1">Easily add, edit, or remove keywords with assigned prices.</p>
             </div>
-            <div class="ml-6 flex-shrink-0">
+            <div class="mt-4 md:mt-0">
                 <button 
                     hx-get="/scrape" 
                     hx-target="#startScraperText" 
                     hx-swap="innerHTML" 
                     hx-indicator="#spinner" 
                     id="startScraper" 
-                    class="bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition-all flex items-center w-40">
-                    <span id="startScraperText">Manual Scrape</span>
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-md shadow hover:bg-indigo-700 transition-all flex items-center">
+                    <span id="startScraperText">Run Scraper</span>
                     <div id="spinner" class="ml-2 text-white hidden">
                         <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
@@ -35,61 +71,126 @@
             </div>
         </div>
 
-        <!-- Add Keyword Form -->
-        <div class="bg-white shadow-lg rounded-2xl p-6 mb-8">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2">Add a New Keyword</h2>
-            <div class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Statistics Cards -->
+            <div class="bg-white rounded-md shadow p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-tag text-blue-600"></i>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Total Keywords</p>
+                    <p class="text-2xl font-bold text-gray-800">38</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-md shadow p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-check text-green-600"></i>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Active Keywords</p>
+                    <p class="text-2xl font-bold text-gray-800">26</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-md shadow p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-dollar-sign text-yellow-600"></i>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Avg. Price</p>
+                    <p class="text-2xl font-bold text-gray-800">$42.50</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-md shadow p-6 flex items-center">
+                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Need Attention</p>
+                    <p class="text-2xl font-bold text-gray-800">4</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <!-- Add Keyword Form -->
+            <div class="bg-white rounded-md shadow p-6">
+                <div class="flex items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800">Add New Keyword</h2>
+                </div>
+                
+                <div class="space-y-4">
                     <div>
-                        <label for="word" class="block text-gray-600 font-medium mb-1">Keyword</label>
+                        <label for="word" class="block text-gray-600 text-sm font-medium mb-2">Keyword</label>
                         <input
                             type="text"
                             id="word"
                             name="word"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             placeholder="Enter keyword"
                             required>
                     </div>
                     <div>
-                        <label for="number_value" class="block text-gray-600 font-medium mb-1">Max Price (optional)</label>
+                        <label for="number_value" class="block text-gray-600 text-sm font-medium mb-2">Max Price (optional)</label>
                         <input
                             type="number"
                             id="number_value"
                             name="number_value"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             placeholder="Enter price limit">
                     </div>
+                    <button
+                        hx-post="/add"
+                        hx-include="closest div"
+                        hx-target="#keywords-list"
+                        hx-swap="outerHTML"
+                        type="button"
+                        class="w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700 transition-all">
+                        Add Keyword
+                    </button>
                 </div>
-                <button
-                    hx-post="/add"
-                    hx-include="closest div"
-                    hx-target="#keywords-list"
-                    hx-swap="outerHTML"
-                    type="button"
-                    class="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition-all">
-                    Add Keyword
-                </button>
             </div>
-        </div>
 
-        <!-- Keyword List -->
-        <div class="bg-white shadow-lg rounded-2xl p-6">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2">Current Keywords</h2>
-            <div id="keywords-list">
-                {% include 'keywords_list.html' %}
+            <!-- Keyword List -->
+            <div class="lg:col-span-2 bg-white rounded-md shadow">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-gray-800">Current Keywords</h2>
+                        <div class="flex space-x-2">
+                            <button class="bg-gray-200 text-gray-700 p-2 rounded-md hover:bg-gray-300">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                            <button class="bg-gray-200 text-gray-700 p-2 rounded-md hover:bg-gray-300">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="keywords-list" class="p-6">
+                    {% include 'keywords_list.html' %}
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-md shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-md shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none flex items-center space-x-2">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Operation successful</span>
+    </div>
 
     <script>
         function showToast(message, color = "green") {
             const toast = document.getElementById("toast");
-            toast.textContent = message;
-            toast.classList.remove("bg-green-500", "bg-red-500");
-            toast.classList.add(`bg-${color}-500`);
+            const toastMessage = document.getElementById("toast-message") || toast;
+            
+            if (toastMessage !== toast) {
+                toastMessage.textContent = message;
+            } else {
+                toast.textContent = message;
+            }
+            
+            toast.classList.remove("bg-green-600", "bg-red-600");
+            toast.classList.add(`bg-${color}-600`);
             toast.classList.remove("opacity-0");
             toast.classList.add("opacity-100");
 
@@ -114,23 +215,23 @@
             eventSource.onmessage = function(event) {
                 const data = event.data;
                 if (data === "scraping_started") {
-                    startScraperText.textContent = "Scraping started...";
+                    startScraperText.innerHTML = '<i class="fas fa-magic mr-2"></i> Scraping started...';
                 } else if (data === "progress_update") {
-                    startScraperText.textContent = "Progress update...";
+                    startScraperText.innerHTML = '<i class="fas fa-magic mr-2"></i> Progress update...';
                 } else if (data === "scraping_complete") {
                     showToast("Scraping Complete!");
                     eventSource.close();
                     startScraperButton.disabled = false;
                     spinner.classList.add("hidden");
-                    startScraperText.textContent = "Manual Scrape";
+                    startScraperText.innerHTML = '<i class="fas fa-magic mr-2"></i> Manual Scraper';
                 } else if (data.startsWith("scraping_error:")) {
-                    showToast(data, "red");
+                    showToast("Scraping Failed: " + data.replace("scraping_error:", ""));
                     eventSource.close();
                     startScraperButton.disabled = false;
                     spinner.classList.add("hidden");
-                    startScraperText.textContent = "Manual Scrape";
+                    startScraperText.innerHTML = '<i class="fas fa-magic mr-2"></i> Cast Scraping Spell';
                 } else {
-                    startScraperText.textContent = data;
+                    startScraperText.innerHTML = '<i class="fas fa-magic mr-2"></i> ' + data;
                 }
             };
         });
@@ -139,7 +240,7 @@
             if (event.detail.target.id === 'keywords-list') {
                 document.getElementById('word').value = '';
                 document.getElementById('number_value').value = '';
-                showToast("Keyword added successfully");
+                showToast("Keyword successfully");
             }
         });
     </script>
